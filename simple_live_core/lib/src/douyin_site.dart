@@ -75,9 +75,13 @@ class DouyinSite implements LiveSite {
 
     var renderData =
         RegExp(
-          r'\{\\"pathname\\":\\"\/\\",\\"categoryData.*?\]\\n',
+          r'\{\\"pathname\\":\\"\/\\",\\"categoryData.*?\]\}\],',
         ).firstMatch(result)?.group(0) ??
         "";
+    // 兼容新的页面结构：结尾多出 ]. 两个字符
+    if (renderData.endsWith("],")) {
+      renderData = renderData.substring(0, renderData.length - 2);
+    }
     var renderDataJson = json.decode(
       renderData
           .trim()
